@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>你的天赋变现报告 · 访问验证</title>
+<meta name="description" content="18道情景选择题，找出你最顺手的赚钱方式。">
+<style>
+  :root{
+    --ink:#101a14;
+    --paper:#f6efe1;
+    --gold:#c8a04b;
+    --gold-deep:#9a7427;
+    --red:#b3402f;
+    --muted:#7c7464;
+    --line:rgba(16,26,20,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:#0c130f;color:var(--ink);display:flex;justify-content:center;min-height:100vh;
+  }
+  .app{
+    width:100%;max-width:480px;min-height:100vh;background:var(--paper);position:relative;overflow:hidden;
+    box-shadow:0 0 60px rgba(0,0,0,.5);
+  }
+  .serif{font-family:"Songti SC","STSongti","Noto Serif SC","SimSun",serif;}
+  .screen{display:none;min-height:100vh;padding:32px 24px 40px;position:relative;}
+  .screen.active{display:block;animation:fade .45s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+  .btn{
+    display:block;width:100%;border:none;cursor:pointer;
+    padding:16px;border-radius:14px;font-size:17px;font-weight:600;letter-spacing:2px;
+    transition:transform .12s ease, opacity .2s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-gold{background:linear-gradient(135deg,#d8b563,#b98d34);color:#fff;box-shadow:0 8px 22px rgba(154,116,39,.35);}
+  .btn-ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink);}
+
+  /* ---------- 口令门 ---------- */
+  #screen-gate{display:none;flex-direction:column;}
+  #screen-gate.active{display:flex;}
+  .gate-wrap{margin:auto;width:100%;}
+  .brand-row{display:flex;align-items:center;justify-content:space-between;font-size:11px;letter-spacing:3px;color:var(--gold-deep);opacity:.85;}
+  .brand-row .line{flex:1;height:1px;background:var(--gold);opacity:.5;margin:0 10px;}
+  .poster{
+    margin:34px 0 26px;border:1px solid var(--gold);
+    background:linear-gradient(160deg,#17261d,#0e1a13);color:var(--paper);
+    border-radius:18px;padding:36px 26px 28px;position:relative;overflow:hidden;
+  }
+  .poster::after{
+    content:"天賦";position:absolute;right:-18px;bottom:-26px;font-size:120px;
+    color:rgba(200,160,75,.08);font-family:"Songti SC","STSongti","Noto Serif SC",serif;font-weight:700;
+  }
+  .poster .kicker{font-size:12px;letter-spacing:6px;color:var(--gold);margin-bottom:16px;}
+  .poster h1{font-size:32px;line-height:1.4;font-weight:700;letter-spacing:3px;}
+  .poster h1 em{font-style:normal;color:var(--gold);}
+  .poster .sub{margin-top:14px;font-size:13px;line-height:1.9;color:rgba(246,239,225,.72);}
+
+  .gate-card{border:1px solid var(--line);border-radius:18px;background:#fbf7ee;padding:24px 20px;}
+  .gate-card .lock-ico{font-size:32px;text-align:center;margin-bottom:10px;}
+  .gate-card h2{font-size:19px;letter-spacing:2px;text-align:center;margin-bottom:6px;}
+  .gate-card .hint{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.8;margin-bottom:18px;}
+  .code-input{
+    width:100%;padding:15px 16px;border:1.5px solid #d9cfba;border-radius:12px;
+    font-size:18px;letter-spacing:3px;text-align:center;background:#fff;color:var(--ink);outline:none;
+    font-family:"SF Mono",Menlo,Consolas,monospace;
+  }
+  .code-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,160,75,.15);}
+  .gate-err{color:var(--red);font-size:13px;text-align:center;margin-top:12px;min-height:20px;letter-spacing:1px;}
+  .gate-card.shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+  .gate-note{text-align:center;font-size:12px;color:var(--muted);margin-top:16px;line-height:1.9;}
+
+  /* ---------- 开场 ---------- */
+  #screen-start{display:none;flex-direction:column;}
+  #screen-start.active{display:flex;}
+  .start-wrap{margin:auto;width:100%;}
+  .poster .stamp{
+    position:absolute;top:18px;right:18px;width:54px;height:54px;border:2px solid var(--red);
+    color:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;
+    font-size:12px;line-height:1.3;text-align:center;transform:rotate(8deg);
+    font-family:"Songti SC","STSongti",serif;font-weight:700;opacity:.9;
+  }
+  .meta-row{display:flex;gap:10px;margin-bottom:26px;}
+  .meta-pill{flex:1;text-align:center;border:1px solid var(--line);border-radius:12px;padding:12px 6px;background:#fbf7ee;}
+  .meta-pill b{display:block;font-size:16px;margin-bottom:4px;}
+  .meta-pill span{font-size:11.5px;color:var(--muted);}
+  .start-note{text-align:center;font-size:12px;color:var(--muted);margin-top:14px;line-height:1.8;}
+
+  /* ---------- 答题 ---------- */
+  .q-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+  .q-head .back{border:none;background:none;font-size:22px;color:var(--ink);cursor:pointer;padding:4px 8px;visibility:hidden;}
+  .q-head .back.show{visibility:visible;}
+  .progress-track{flex:1;height:5px;background:rgba(16,26,20,.1);border-radius:4px;margin:0 14px;overflow:hidden;}
+  .progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold-deep));border-radius:4px;transition:width .35s ease;}
+  .q-count{font-size:12px;color:var(--muted);min-width:42px;text-align:right;}
+  .q-title{font-size:23px;line-height:1.6;font-weight:700;margin:14px 4px 26px;letter-spacing:1px;}
+  .q-title .q-mark{color:var(--gold-deep);}
+  .opt{
+    display:block;width:100%;text-align:left;margin-bottom:14px;
+    border:1.5px solid var(--line);background:#fbf7ee;border-radius:14px;
+    padding:17px 18px;font-size:15.5px;line-height:1.55;color:var(--ink);cursor:pointer;transition:all .18s ease;
+  }
+  .opt:active,.opt.picked{border-color:var(--gold);background:#fff8e8;box-shadow:0 4px 14px rgba(200,160,75,.18);transform:scale(.985);}
+
+  /* ---------- 分析中 ---------- */
+  #screen-loading{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+  #screen-loading.active{display:flex;}
+  .loader-ring{width:86px;height:86px;border:3px solid rgba(200,160,75,.2);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:34px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .load-text{font-size:18px;letter-spacing:2px;margin-bottom:10px;min-height:26px;}
+  .load-sub{font-size:13px;color:var(--muted);letter-spacing:1px;}
+
+  /* ---------- 结果 ---------- */
+  .report{background:#fdfaf2;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(16,26,20,.12);}
+  .report-head{background:linear-gradient(160deg,#17261d,#0e1a13);color:var(--paper);padding:22px 22px 20px;}
+  .report-head .lab{font-size:10.5px;letter-spacing:4px;color:var(--gold);}
+  .report-head .no{font-size:11px;color:rgba(246,239,225,.5);margin-top:6px;letter-spacing:1px;}
+  .r-hero{display:flex;align-items:center;gap:18px;margin-top:18px;}
+  .r-emoji{
+    width:72px;height:72px;border-radius:50%;flex:none;background:rgba(200,160,75,.14);
+    border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:38px;
+  }
+  .r-name{font-size:27px;font-weight:700;letter-spacing:2px;line-height:1.3;}
+  .r-tag{font-size:12.5px;color:var(--gold);margin-top:6px;letter-spacing:1px;}
+  .r-body{padding:22px;}
+  .r-sec{margin-bottom:24px;}
+  .r-sec h3{font-size:13px;letter-spacing:3px;color:var(--gold-deep);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .r-sec h3::after{content:"";flex:1;height:1px;background:var(--line);}
+  .r-sec p{font-size:14.5px;line-height:1.9;color:#33403a;}
+  .radar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px;}
+  .radar-row .nm{width:96px;flex:none;color:#33403a;}
+  .radar-track{flex:1;height:8px;background:#ece3d0;border-radius:5px;overflow:hidden;}
+  .radar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#d8b563,#9a7427);width:0;transition:width 1s ease .3s;}
+  .radar-row .pct{width:38px;text-align:right;color:var(--muted);font-size:12px;}
+  .hustle{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;background:#fbf7ee;}
+  .hustle b{display:block;font-size:14.5px;margin-bottom:6px;}
+  .hustle .chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .chip{font-size:10.5px;padding:3px 9px;border-radius:20px;background:#eee4cd;color:var(--gold-deep);letter-spacing:.5px;}
+  .quote-box{
+    border-left:3px solid var(--red);padding:12px 16px;background:#f8efe3;border-radius:0 10px 10px 0;
+    font-family:"Songti SC","STSongti","Noto Serif SC",serif;font-size:15px;line-height:1.8;color:#5a3a22;
+  }
+  .action-box{background:#10201a;color:var(--paper);border-radius:12px;padding:16px 18px;}
+  .action-box .lab{font-size:11px;letter-spacing:3px;color:var(--gold);margin-bottom:8px;}
+  .action-box p{color:rgba(246,239,225,.85);font-size:14px;line-height:1.8;}
+  .report-foot{padding:16px 22px 20px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);letter-spacing:1px;}
+
+  .after-actions{margin-top:18px;display:flex;gap:10px;}
+  .after-actions .btn{padding:14px 10px;font-size:14px;letter-spacing:1px;}
+  .foot-tip{text-align:center;font-size:11px;color:rgba(246,239,225,.5);margin-top:26px;letter-spacing:1px;line-height:1.8;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ 口令门 ============ -->
+  <section class="screen active" id="screen-gate">
+    <div class="gate-wrap">
+      <div class="brand-row"><span>TML · 001</span><span class="line"></span><span>访问验证</span></div>
+      <div class="poster">
+        <div class="kicker">TALENT MONETIZATION LAB</div>
+        <h1 class="serif">你的<em>天赋</em><br>变现报告</h1>
+        <p class="sub">18 道情景选择题，找出你最顺手的赚钱方式。<br>本内容凭访问口令进入。</p>
+      </div>
+      <div class="gate-card" id="gateCard">
+        <div class="lock-ico">🔑</div>
+        <h2 class="serif">输入访问口令</h2>
+        <p class="hint">付款后获取的专属口令，验证通过即可开始测试</p>
+        <input class="code-input" id="codeInput" type="password" inputmode="text"
+               autocomplete="off" placeholder="请输入口令" aria-label="访问口令">
+        <div class="gate-err" id="gateErr"></div>
+        <button class="btn btn-gold" id="gateBtn" style="margin-top:14px;" onclick="submitCode()">验 证 并 进 入</button>
+      </div>
+      <p class="gate-note">口令在付款后由发放方私信发送<br>如无法打开，请联系发你链接的人核实</p>
+    </div>
+  </section>
+
+  <!-- ============ 开场 ============ -->
+  <section class="screen" id="screen-start">
+    <div class="start-wrap">
+      <div class="brand-row"><span>TML · 001</span><span class="line"></span><span>天赋鉴定</span></div>
+      <div class="poster">
+        <div class="stamp">天赋<br>鉴定</div>
+        <div class="kicker">TALENT MONETIZATION LAB</div>
+        <h1 class="serif">你的<em>天赋</em><br>变现报告</h1>
+        <p class="sub">18 道情景选择题，按真实想法作答。<br>不是测你"有多优秀"，而是找出<br><b style="color:var(--gold)">你靠什么赚钱最不内耗。</b></p>
+      </div>
+      <div class="meta-row">
+        <div class="meta-pill"><b>18题</b><span>约3分钟</span></div>
+        <div class="meta-pill"><b>8种</b><span>天赋人设</span></div>
+        <div class="meta-pill"><b>3个</b><span>可动手副业</span></div>
+      </div>
+      <button class="btn btn-gold" onclick="startQuiz()">开 始 鉴 定</button>
+      <p class="start-note">按第一反应作答，结果没有对错<br>建议截图保存，转发给总说"不知道自己能干啥"的朋友</p>
+    </div>
+    <p class="foot-tip">本测试为娱乐与自我探索工具，结果基于你的选择生成</p>
+  </section>
+
+  <!-- ============ 答题 ============ -->
+  <section class="screen" id="screen-quiz">
+    <div class="q-head">
+      <button class="back" id="btn-back" onclick="prevQ()">‹</button>
+      <div class="progress-track"><div class="progress-bar" id="pbar"></div></div>
+      <div class="q-count" id="qcount"></div>
+    </div>
+    <h2 class="q-title serif" id="qtitle"></h2>
+    <div id="opts"></div>
+  </section>
+
+  <!-- ============ 分析中 ============ -->
+  <section class="screen" id="screen-loading">
+    <div class="loader-ring"></div>
+    <div class="load-text serif" id="loadText">正在扫描你的决策模式…</div>
+    <div class="load-sub">18 个选择交叉验证中</div>
+  </section>
+
+  <!-- ============ 结果 ============ -->
+  <section class="screen" id="screen-result">
+    <div class="report">
+      <div class="report-head">
+        <div class="lab">TALENT MONETIZATION REPORT</div>
+        <div class="no" id="reportNo"></div>
+        <div class="r-hero">
+          <div class="r-emoji" id="rEmoji"></div>
+          <div>
+            <div class="r-name serif" id="rName"></div>
+            <div class="r-tag" id="rTag"></div>
+          </div>
+        </div>
+      </div>
+      <div class="r-body" id="reportBody">
+        <div class="r-sec">
+          <h3>天赋雷达</h3>
+          <div id="radar"></div>
+        </div>
+        <div class="r-sec">
+          <h3>你的天赋内核</h3>
+          <p id="rCore"></p>
+        </div>
+        <div class="r-sec">
+          <h3>你赚钱的底层逻辑</h3>
+          <p id="rLogic"></p>
+        </div>
+        <div class="r-sec">
+          <h3>3 个马上能动手的副业</h3>
+          <div id="hustles"></div>
+        </div>
+        <div class="r-sec">
+          <h3>本周就做这一件事</h3>
+          <div class="action-box"><div class="lab">YOUR NEXT MOVE</div><p id="rAction"></p></div>
+        </div>
+        <div class="r-sec">
+          <h3>给你的避坑提醒</h3>
+          <div class="quote-box" id="rWarn"></div>
+        </div>
+      </div>
+      <div class="report-foot">
+        <span>天赋变现研究所</span>
+        <span>第 <b id="reportSerial"></b> 份报告</span>
+      </div>
+    </div>
+
+    <div class="after-actions">
+      <button class="btn btn-ghost" onclick="restart()">再 测 一 次</button>
+      <button class="btn btn-gold" onclick="shareResult()">分 享 给 朋 友</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   访问控制：题库（QUESTIONS / TYPES）不以明文存在于本页，
+   而是加密存放在 data.enc.json。
+   - 内容密钥随机生成，AES-GCM 加密整份题库
+   - 每个访问口令经 PBKDF2(20万次) 派生密钥后包裹内容密钥
+   - 无正确口令只能拿到密文，查看源码也看不到题目和结果
+========================================================= */
+let QUESTIONS = [], TYPES = {};
+let ENC = null;
+
+const b64ToBuf = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+const bufToB64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
+
+/* 用口令逐个尝试解开"内容密钥包裹"，成功返回内容密钥字节 */
+async function unwrapContentKey(code){
+  const baseKey = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(code), 'PBKDF2', false, ['deriveKey']
+  );
+  for(const w of ENC.keys){
+    try{
+      const wrapKey = await crypto.subtle.deriveKey(
+        { name:'PBKDF2', salt:b64ToBuf(w.salt), iterations:w.iter, hash:'SHA-256' },
+        baseKey, { name:'AES-GCM', length:256 }, false, ['decrypt']
+      );
+      const raw = await crypto.subtle.decrypt(
+        { name:'AES-GCM', iv:b64ToBuf(w.iv) }, wrapKey, b64ToBuf(w.ct)
+      );
+      return new Uint8Array(raw);
+    }catch(e){ /* 这个口令不匹配，试下一个 */ }
+  }
+  return null;
+}
+
+/* 用内容密钥解密题库 */
+async function decryptContent(ckBytes){
+  const ck = await crypto.subtle.importKey('raw', ckBytes, 'AES-GCM', false, ['decrypt']);
+  const plain = await crypto.subtle.decrypt(
+    { name:'AES-GCM', iv:b64ToBuf(ENC.payload.iv) }, ck, b64ToBuf(ENC.payload.ct)
+  );
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+async function enterWithCode(code, remember){
+  const ck = await unwrapContentKey(code.trim());
+  if(!ck) return false;
+  const data = await decryptContent(ck);
+  QUESTIONS = data.QUESTIONS; TYPES = data.TYPES;
+  if(remember){
+    try{ localStorage.setItem('tml_ck', bufToB64(ck)); }catch(e){}
+  }
+  return true;
+}
+
+async function boot(){
+  try{
+    ENC = await (await fetch('data.enc.json', {cache:'no-store'})).json();
+  }catch(e){
+    $('gateErr').textContent = '内容加载失败，请检查网络后刷新';
+    return;
+  }
+  // 1) 本机已验证过
+  let saved = null;
+  try{ saved = localStorage.getItem('tml_ck'); }catch(e){}
+  if(saved){
+    try{
+      const data = await decryptContent(b64ToBuf(saved));
+      QUESTIONS = data.QUESTIONS; TYPES = data.TYPES;
+      show('screen-start'); return;
+    }catch(e){ try{ localStorage.removeItem('tml_ck'); }catch(_){} }
+  }
+  // 2) 链接自带口令：链接后加 #k=口令，付款后可直接发给买家
+  const m = location.hash.match(/[#&]k=([^&]+)/);
+  if(m){
+    const code = decodeURIComponent(m[1]);
+    $('codeInput').value = code;
+    if(await enterWithCode(code, true)){ history.replaceState(null,'',location.pathname); show('screen-start'); return; }
+  }
+  // 3) 手动输入
+  $('codeInput').focus();
+}
+
+let gateBusy = false, failCount = 0;
+async function submitCode(){
+  if(gateBusy) return;
+  const code = $('codeInput').value.trim();
+  if(!code){ $('gateErr').textContent='请先输入访问口令'; return; }
+  gateBusy = true;
+  const btn = $('gateBtn'); btn.textContent='验 证 中…'; btn.style.opacity=.7;
+  const ok = await enterWithCode(code, true);
+  btn.textContent='验 证 并 进 入'; btn.style.opacity=1; gateBusy=false;
+  if(ok){
+    history.replaceState(null,'',location.pathname);
+    show('screen-start');
+  }else{
+    failCount++;
+    $('gateErr').textContent = '口令不正确，请注意大小写（第'+failCount+'次尝试）';
+    const card=$('gateCard'); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    $('codeInput').select();
+  }
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  $('codeInput').addEventListener('keydown', e=>{ if(e.key==='Enter') submitCode(); });
+  boot();
+});
+
+/* ---------------- 状态与流程 ---------------- */
+let cur = 0, deck = [], answers = [];
+const $ = id => document.getElementById(id);
+
+/* Fisher-Yates 洗牌：每局开始时打乱题目顺序与每题选项顺序。
+   选项的分值对象 p 跟着选项一起走，因此只改变位置，不改变打分结果。 */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function buildDeck(){
+  return shuffle(QUESTIONS).map(q=>({ q:q.q, opts:shuffle(q.opts) }));
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function startQuiz(){
+  deck = buildDeck();
+  answers = new Array(deck.length).fill(null);
+  cur=0; renderQ(); show('screen-quiz');
+}
+function restart(){ location.reload(); }
+
+function renderQ(){
+  const item = deck[cur];
+  $('qcount').textContent = (cur+1)+' / '+deck.length;
+  $('pbar').style.width = ((cur)/deck.length*100)+'%';
+  $('qtitle').innerHTML = '<span class="q-mark">「</span>'+item.q+'<span class="q-mark">」</span>';
+  $('btn-back').classList.toggle('show', cur>0);
+  const box = $('opts'); box.innerHTML='';
+  item.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'+(answers[cur]===i?' picked':'');
+    b.innerHTML='<span class="dot"></span>'+o.t;
+    b.onclick=()=>pick(i);
+    box.appendChild(b);
+  });
+}
+function pick(i){
+  answers[cur]=i;
+  document.querySelectorAll('.opt').forEach((el,idx)=>el.classList.toggle('picked',idx===i));
+  setTimeout(()=>{
+    if(cur<deck.length-1){ cur++; renderQ(); }
+    else { $('pbar').style.width='100%'; analyze(); }
+  }, 220);
+}
+function prevQ(){ if(cur>0){ cur--; renderQ(); } }
+
+const LOAD_LINES=['正在扫描你的决策模式…','交叉验证 8 个天赋维度…','匹配你的变现人设…','生成专属副业清单…'];
+function analyze(){
+  show('screen-loading');
+  let i=0;
+  $('loadText').textContent=LOAD_LINES[0];
+  const timer=setInterval(()=>{
+    i++;
+    if(i<LOAD_LINES.length){ $('loadText').textContent=LOAD_LINES[i]; }
+    else{ clearInterval(timer); buildResult(); }
+  }, 650);
+}
+
+function tally(){
+  const scores={};
+  Object.keys(TYPES).forEach(k=>scores[k]=0);
+  answers.forEach((ai,qi)=>{
+    if(ai===null) return;
+    const p=deck[qi].opts[ai].p;
+    for(const k in p) scores[k]+=p[k];
+  });
+  return scores;
+}
+
+let resultKey=null;
+function buildResult(){
+  const scores=tally();
+  const ranked=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  resultKey=ranked[0][0];
+  const t=TYPES[resultKey];
+  const third=ranked[2][1];
+
+  const d=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  const date=''+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+  const serial=Math.floor(1000+Math.random()*9000);
+  $('reportNo').textContent='报告编号 TML-'+date+'-'+serial;
+  $('reportSerial').textContent=serial;
+  $('rEmoji').textContent=t.emoji;
+  $('rName').textContent=t.name;
+  $('rTag').textContent=t.tag;
+  $('rCore').textContent=t.core;
+  $('rLogic').textContent=t.logic;
+  $('rAction').textContent=t.action;
+  $('rWarn').textContent=t.warn;
+
+  const radar=$('radar'); radar.innerHTML='';
+  ranked.slice(0,3).forEach(([k,v],idx)=>{
+    const pct=idx===0? 88+Math.floor(Math.random()*8) : Math.max(38, Math.round(55+(v-third)/Math.max(ranked[0][1]-third,1)*35)-(idx===1?0:14));
+    const row=document.createElement('div');
+    row.className='radar-row';
+    row.innerHTML='<span class="nm">'+TYPES[k].emoji+' '+TYPES[k].name+'</span>'
+      +'<span class="radar-track"><span class="radar-fill" data-w="'+pct+'"></span></span>'
+      +'<span class="pct">'+pct+'%</span>';
+    radar.appendChild(row);
+  });
+
+  const hb=$('hustles'); hb.innerHTML='';
+  t.hustles.forEach((h,i)=>{
+    const div=document.createElement('div');
+    div.className='hustle';
+    div.innerHTML='<b>'+(i+1)+'. '+h.t+'</b><p style="font-size:13.5px;line-height:1.8;color:#33403a;margin-bottom:8px;">'+h.d+'</p>'
+      +'<div class="chips">'+h.c.map(c=>'<span class="chip">'+c+'</span>').join('')+'</div>';
+    hb.appendChild(div);
+  });
+
+  show('screen-result');
+  setTimeout(()=>document.querySelectorAll('.radar-fill').forEach(el=>el.style.width=el.dataset.w+'%'), 300);
+}
+
+/* ---------------- 分享 ---------------- */
+function shareResult(){
+  if(!resultKey) return;
+  const t=TYPES[resultKey];
+  const text='我测出的天赋类型是「'+t.emoji+t.name+'」——'+t.tag+'。18道题3分钟，你也测测自己靠什么赚钱最不内耗';
+  const url=location.href.split('#')[0];
+  if(navigator.share){
+    navigator.share({title:'你的天赋变现报告', text:text, url:url}).catch(()=>{});
+  }else if(navigator.clipboard){
+    navigator.clipboard.writeText(text+' '+url).then(()=>alert('结果文案已复制，去粘贴分享给朋友吧')).catch(()=>alert(text));
+  }else{ alert(text); }
+}
+</script>
+</body>
+</html>

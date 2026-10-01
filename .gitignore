@@ -1,0 +1,3 @@
+# 明文题库与本地打包工具，禁止入库
+content.source.json
+pack.local.js
