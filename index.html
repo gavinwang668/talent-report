@@ -282,6 +282,8 @@
 ========================================================= */
 let QUESTIONS = [], TYPES = {};
 let ENC = null;
+/* 同一域名下放多个测试时，按目录隔离本机凭证，互不干扰 */
+const STORE_KEY = 'tml_ck@' + location.pathname;
 
 const b64ToBuf = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
 const bufToB64 = buf => btoa(String.fromCharCode(...new Uint8Array(buf)));
@@ -321,7 +323,7 @@ async function enterWithCode(code, remember){
   const data = await decryptContent(ck);
   QUESTIONS = data.QUESTIONS; TYPES = data.TYPES;
   if(remember){
-    try{ localStorage.setItem('tml_ck', bufToB64(ck)); }catch(e){}
+    try{ localStorage.setItem(STORE_KEY, bufToB64(ck)); }catch(e){}
   }
   return true;
 }
@@ -329,7 +331,7 @@ async function enterWithCode(code, remember){
 async function boot(){
   // 自测/换机：访问裸链接加 ?forget=1 可清除本机已保存的通行证，重新看到口令门
   if(/[?&](forget|logout|reset)=1/.test(location.search)){
-    try{ localStorage.removeItem('tml_ck'); }catch(e){}
+    try{ localStorage.removeItem(STORE_KEY); }catch(e){}
     history.replaceState(null,'',location.pathname);
   }
   try{
@@ -340,13 +342,13 @@ async function boot(){
   }
   // 1) 本机已验证过
   let saved = null;
-  try{ saved = localStorage.getItem('tml_ck'); }catch(e){}
+  try{ saved = localStorage.getItem(STORE_KEY); }catch(e){}
   if(saved){
     try{
       const data = await decryptContent(b64ToBuf(saved));
       QUESTIONS = data.QUESTIONS; TYPES = data.TYPES;
       show('screen-start'); return;
-    }catch(e){ try{ localStorage.removeItem('tml_ck'); }catch(_){} }
+    }catch(e){ try{ localStorage.removeItem(STORE_KEY); }catch(_){} }
   }
   // 2) 链接自带口令：链接后加 #k=口令，付款后可直接发给买家
   const m = location.hash.match(/[#&]k=([^&]+)/);
