@@ -327,6 +327,11 @@ async function enterWithCode(code, remember){
 }
 
 async function boot(){
+  // 自测/换机：访问裸链接加 ?forget=1 可清除本机已保存的通行证，重新看到口令门
+  if(/[?&](forget|logout|reset)=1/.test(location.search)){
+    try{ localStorage.removeItem('tml_ck'); }catch(e){}
+    history.replaceState(null,'',location.pathname);
+  }
   try{
     ENC = await (await fetch('data.enc.json', {cache:'no-store'})).json();
   }catch(e){
